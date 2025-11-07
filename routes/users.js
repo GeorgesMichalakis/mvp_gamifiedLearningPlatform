@@ -65,14 +65,16 @@ router.get('/profile', auth, async (req, res) => {
         xpRequired,
         progressPercentage: Math.round((xpProgress / xpRequired) * 100)
       },
-      recentActivity: progressRecords.map(p => ({
-        courseId: p.courseId._id,
-        courseTitle: p.courseId.title,
-        lastAccessed: p.lastAccessedAt,
-        completed: p.courseCompleted,
-        lessonsCompleted: p.completedLessons.length,
-        totalLessons: p.courseId.lessons.length
-      }))
+      recentActivity: progressRecords
+        .filter(p => p.courseId) // Filter out records with null courseId
+        .map(p => ({
+          courseId: p.courseId._id,
+          courseTitle: p.courseId.title,
+          lastAccessed: p.lastAccessedAt,
+          completed: p.courseCompleted,
+          lessonsCompleted: p.completedLessons.length,
+          totalLessons: p.courseId.lessons.length
+        }))
     });
   } catch (error) {
     console.error(error);

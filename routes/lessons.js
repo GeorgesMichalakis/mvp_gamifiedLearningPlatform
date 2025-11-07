@@ -43,7 +43,8 @@ const checkAndAwardBadges = async (user) => {
 
   for (const badge of badges) {
     // Skip if user already has this badge
-    if (user.badges.includes(badge._id)) {
+    const hasBadge = user.badges.some(b => b.toString() === badge._id.toString());
+    if (hasBadge) {
       continue;
     }
 
