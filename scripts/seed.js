@@ -77,12 +77,24 @@ const seedData = async () => {
     console.log('Created badges');
 
     // Create Course 1: Introduction to JavaScript
+    // First create the course placeholder
+    const jsCourse = await Course.create({
+      title: 'Introduction to JavaScript',
+      description: 'Learn the fundamentals of JavaScript, the language of the web. Perfect for beginners!',
+      thumbnail: '💻',
+      difficulty: 'beginner',
+      estimatedTime: 20,
+      lessons: [],
+      totalXP: 115,
+      isPublished: true
+    });
+
     const jsLessons = [];
     
     const jsLesson1 = await Lesson.create({
       title: 'What is JavaScript?',
       content: `JavaScript is a versatile programming language that powers the interactive web.\n\nOriginally created to make web pages interactive, JavaScript has evolved into a powerful language used for:\n- Front-end web development\n- Back-end server development (Node.js)\n- Mobile app development\n- Desktop applications\n- Game development\n\nJavaScript runs in web browsers and allows you to create dynamic, responsive user experiences. It's one of the three core technologies of the web, alongside HTML and CSS.`,
-      courseId: null, // Will update later
+      courseId: jsCourse._id,
       order: 1,
       duration: 5,
       xpReward: 10
@@ -136,7 +148,7 @@ const seedData = async () => {
     const jsLesson2 = await Lesson.create({
       title: 'Variables and Data Types',
       content: `In JavaScript, variables are containers for storing data values.\n\nYou can declare variables using:\n- let: for variables that can change\n- const: for variables that won't change\n- var: the old way (avoid in modern code)\n\nJavaScript has several data types:\n- String: text data ("hello")\n- Number: numeric data (42, 3.14)\n- Boolean: true or false\n- Array: lists of values ([1, 2, 3])\n- Object: collections of key-value pairs ({name: "John"})\n- Undefined: variable declared but not assigned\n- Null: intentionally empty value\n\nExample:\nlet name = "Alice";\nconst age = 25;\nlet isStudent = true;`,
-      courseId: null,
+      courseId: jsCourse._id,
       order: 2,
       duration: 7,
       xpReward: 15
@@ -175,7 +187,7 @@ const seedData = async () => {
     const jsLesson3 = await Lesson.create({
       title: 'Functions in JavaScript',
       content: `Functions are reusable blocks of code that perform specific tasks.\n\nThere are several ways to create functions:\n\n1. Function Declaration:\nfunction greet(name) {\n  return "Hello " + name;\n}\n\n2. Arrow Function (modern):\nconst greet = (name) => {\n  return "Hello " + name;\n};\n\n3. Function Expression:\nconst greet = function(name) {\n  return "Hello " + name;\n};\n\nFunctions can:\n- Take parameters (inputs)\n- Return values (outputs)\n- Be called multiple times\n- Make your code more organized and reusable\n\nExample:\nfunction add(a, b) {\n  return a + b;\n}\nconsole.log(add(5, 3)); // Output: 8`,
-      courseId: null,
+      courseId: jsCourse._id,
       order: 3,
       duration: 8,
       xpReward: 20
@@ -210,32 +222,30 @@ const seedData = async () => {
     jsLesson3.quiz = jsQuiz3._id;
     await jsLesson3.save();
 
-    const jsCourse = await Course.create({
-      title: 'Introduction to JavaScript',
-      description: 'Learn the fundamentals of JavaScript, the language of the web. Perfect for beginners!',
-      thumbnail: '💻',
-      difficulty: 'beginner',
-      estimatedTime: 20,
-      lessons: jsLessons,
-      totalXP: 45 + 70, // lesson XP + quiz XP
-      isPublished: true
-    });
-
-    // Update lessons with course ID
-    await Lesson.updateMany(
-      { _id: { $in: jsLessons } },
-      { courseId: jsCourse._id }
-    );
+    // Update course with lessons
+    jsCourse.lessons = jsLessons;
+    await jsCourse.save();
 
     console.log('Created JavaScript course');
 
     // Create Course 2: Python Basics
+    const pyCourse = await Course.create({
+      title: 'Python Basics',
+      description: 'Master the basics of Python programming. Great for data science and general programming!',
+      thumbnail: '�',
+      difficulty: 'beginner',
+      estimatedTime: 11,
+      lessons: [],
+      totalXP: 70,
+      isPublished: true
+    });
+
     const pyLessons = [];
 
     const pyLesson1 = await Lesson.create({
       title: 'Getting Started with Python',
       content: `Python is a powerful, easy-to-learn programming language.\n\nWhy Python?\n- Clean, readable syntax\n- Versatile: web dev, data science, AI, automation\n- Huge community and libraries\n- Great for beginners and experts alike\n\nPython emphasizes code readability with its use of indentation. Instead of curly braces, Python uses whitespace to define code blocks.\n\nPython is used by companies like Google, Netflix, NASA, and Instagram for everything from web applications to scientific computing.`,
-      courseId: null,
+      courseId: pyCourse._id,
       order: 1,
       duration: 5,
       xpReward: 10
@@ -268,7 +278,7 @@ const seedData = async () => {
     const pyLesson2 = await Lesson.create({
       title: 'Python Variables and Types',
       content: `Python variables are created when you assign a value to them.\n\nNo need to declare the type - Python figures it out:\nname = "Bob"        # String\nage = 30            # Integer\nheight = 5.9        # Float\nis_student = True   # Boolean\n\nPython has several built-in data types:\n- int: whole numbers (42)\n- float: decimal numbers (3.14)\n- str: text ("hello")\n- bool: True or False\n- list: ordered collection [1, 2, 3]\n- dict: key-value pairs {"name": "Bob"}\n- tuple: immutable list (1, 2, 3)\n- set: unique values {1, 2, 3}\n\nYou can check a variable's type using type():\nprint(type(age))  # <class 'int'>`,
-      courseId: null,
+      courseId: pyCourse._id,
       order: 2,
       duration: 6,
       xpReward: 15
@@ -304,31 +314,30 @@ const seedData = async () => {
     pyLesson2.quiz = pyQuiz2._id;
     await pyLesson2.save();
 
-    const pyCourse = await Course.create({
-      title: 'Python Basics',
-      description: 'Master the basics of Python programming. Great for data science and general programming!',
-      thumbnail: '🐍',
-      difficulty: 'beginner',
-      estimatedTime: 11,
-      lessons: pyLessons,
-      totalXP: 25 + 45,
-      isPublished: true
-    });
-
-    await Lesson.updateMany(
-      { _id: { $in: pyLessons } },
-      { courseId: pyCourse._id }
-    );
+    // Update course with lessons
+    pyCourse.lessons = pyLessons;
+    await pyCourse.save();
 
     console.log('Created Python course');
 
     // Create Course 3: Web Development Fundamentals
+    const webCourse = await Course.create({
+      title: 'Web Development Fundamentals',
+      description: 'Understand the core technologies that power the modern web.',
+      thumbnail: '🌐',
+      difficulty: 'beginner',
+      estimatedTime: 6,
+      lessons: [],
+      totalXP: 32,
+      isPublished: true
+    });
+
     const webLessons = [];
 
     const webLesson1 = await Lesson.create({
       title: 'The Web Development Trio',
       content: `Modern web development relies on three core technologies:\n\n1. HTML (Structure)\n- Defines the content and structure\n- Uses tags like <div>, <p>, <h1>\n- The skeleton of a webpage\n\n2. CSS (Style)\n- Controls appearance and layout\n- Colors, fonts, spacing, animations\n- Makes websites beautiful\n\n3. JavaScript (Behavior)\n- Adds interactivity\n- Responds to user actions\n- Makes websites dynamic\n\nThink of it like building a house:\n- HTML is the frame and walls\n- CSS is the paint and decoration\n- JavaScript is the electricity and plumbing\n\nTogether, these three technologies create the modern web experience!`,
-      courseId: null,
+      courseId: webCourse._id,
       order: 1,
       duration: 6,
       xpReward: 12
@@ -364,21 +373,9 @@ const seedData = async () => {
     webLesson1.quiz = webQuiz1._id;
     await webLesson1.save();
 
-    const webCourse = await Course.create({
-      title: 'Web Development Fundamentals',
-      description: 'Understand the core technologies that power the modern web.',
-      thumbnail: '🌐',
-      difficulty: 'beginner',
-      estimatedTime: 6,
-      lessons: webLessons,
-      totalXP: 12 + 20,
-      isPublished: true
-    });
-
-    await Lesson.updateMany(
-      { _id: { $in: webLessons } },
-      { courseId: webCourse._id }
-    );
+    // Update course with lessons
+    webCourse.lessons = webLessons;
+    await webCourse.save();
 
     console.log('Created Web Development course');
 
